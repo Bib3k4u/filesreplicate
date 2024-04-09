@@ -69,61 +69,61 @@ app.use('/uploads', express.static('uploads'));
 
 // Get all files
 app.get('/files', async (req, res) => {
-    try {
-      const fileList = await File.findAll();
-      const fileDataList = await Promise.all(fileList.map(async file => {
-        const { filename, fileData, ...rest } = file.toJSON();
-        return { filename, fileData: fileData.toString('base64'), ...rest };
-      }));
-      res.json(fileDataList);
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: 'Server Error' });
-    }
-  });
-  
-  // Get file by filename
-  app.get('/files/:filename', async (req, res) => {
-    const { filename } = req.params;
-    try {
-      const file = await File.findOne({ where: { filename } });
-      if (!file) {
-        return res.status(404).json({ message: 'File not found' });
-      }
-      res.set('Content-Disposition', `attachment; filename="${file.filename}"`);
-      res.send(file.fileData);
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: 'Server Error' });
-    }
-  });
+  try {
+    const fileList = await File.findAll();
+    const fileDataList = await Promise.all(fileList.map(async file => {
+      const { filename, fileData, ...rest } = file.toJSON();
+      return { filename, fileData: fileData.toString('base64'), ...rest };
+    }));
+    res.json(fileDataList);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server Error' });
+  }
+});
 
-  app.delete('/files/:filename', async (req, res) => {
-    const { filename } = req.params;
-    try {
-      // Check if the file exists in the database
-      const file = await File.findOne({ where: { filename } });
-      if (!file) {
-        return res.status(404).json({ message: 'File not found' });
-      }
-  
-      // Delete the file from the storage
-      // Your code to delete the file...
-  
-      // Delete the file record from the database
-      await file.destroy();
-  
-      res.json({ message: 'File deleted successfully' });
-    } catch (error) {
-      console.error('Error deleting file:', error);
-      res.status(500).json({ message: 'Server Error' });
+// Get file by filename
+app.get('/files/:filename', async (req, res) => {
+  const { filename } = req.params;
+  try {
+    const file = await File.findOne({ where: { filename } });
+    if (!file) {
+      return res.status(404).json({ message: 'File not found' });
     }
-  });
-  
-  
-  
+    res.set('Content-Disposition', `attachment; filename="${file.filename}"`);
+    res.send(file.fileData);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server Error' });
+  }
+});
 
-const PORT = process.env.PORT || 5000;
+app.delete('/files/:filename', async (req, res) => {
+  const { filename } = req.params;
+  try {
+    // Check if the file exists in the database
+    const file = await File.findOne({ where: { filename } });
+    if (!file) {
+      return res.status(404).json({ message: 'File not found' });
+    }
+
+    // Delete the file from the storage
+    // Your code to delete the file...
+
+    // Delete the file record from the database
+    await file.destroy();
+
+    res.json({ message: 'File deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting file:', error);
+    res.status(500).json({ message: 'Server Error' });
+  }
+});
+
+
+
+
+const PORT = 5000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });

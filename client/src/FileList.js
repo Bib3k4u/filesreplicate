@@ -9,7 +9,7 @@ const FileList = () => {
   useEffect(() => {
     const fetchFiles = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/files');
+        const response = await axios.get('https://filesreplicate.onrender.com/files');
         setFiles(response.data);
       } catch (error) {
         console.error('Error fetching files:', error);
@@ -48,7 +48,7 @@ const FileList = () => {
 
   const handleFileClick = async (filename) => {
     try {
-      const response = await axios.get(`http://localhost:5000/files/${filename}`, {
+      const response = await axios.get(`https://filesreplicate.onrender.com/files/${filename}`, {
         responseType: 'blob', // Ensure response is treated as binary data
       });
 
@@ -73,7 +73,7 @@ const FileList = () => {
 
   const handleDeleteClick = async (filename) => {
     try {
-      await axios.delete(`http://localhost:5000/files/${filename}`);
+      await axios.delete(`https://filesreplicate.onrender.com/files/${filename}`);
       // Remove the deleted file from the files state
       setFiles(prevFiles => prevFiles.filter(file => file.filename !== filename));
       setDeleteSuccess(true); // Set delete success flag
