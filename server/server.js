@@ -123,6 +123,11 @@ app.delete('/files/:filename', async (req, res) => {
 
 
 
-app.listen(8080, () => {
-  console.log(`Server is running on port 5000`);
-});
+// Sync database and start server
+sequelize.sync()
+  .then(() => {
+    app.listen(5000, () => {
+      console.log('Server is running on port 5000');
+    });
+  })
+  .catch(err => console.error('Error syncing database:', err));
