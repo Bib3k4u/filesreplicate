@@ -26,7 +26,7 @@ const FileUpload = () => {
       const formData = new FormData();
       formData.append('file', selectedFile);
 
-      const res = await axios.post(`https://filesreplicate.onrender.com/upload?type=${fileType}`, formData, {
+      const res = await axios.post(`http://localhost:5000/upload?type=${fileType}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

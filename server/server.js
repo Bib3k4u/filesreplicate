@@ -4,7 +4,6 @@ const multer = require('multer');
 const cors = require('cors');
 const { Sequelize, DataTypes } = require('sequelize');
 const fs = require('fs');
-const path = require('path'); // Import the 'path' module
 
 const app = express();
 app.use(cors());
@@ -41,7 +40,13 @@ const File = sequelize.define('File', {
 });
 
 // Sync the model with the database
-sequelize.sync();
+sequelize.sync()
+  .then(() => {
+    console.log('Database synchronized');
+  })
+  .catch((error) => {
+    console.error('Error synchronizing database:', error);
+  });
 
 // Routes
 app.post('/upload', upload.single('file'), async (req, res) => {
@@ -98,6 +103,7 @@ app.get('/files/:filename', async (req, res) => {
   }
 });
 
+// Delete file by filename
 app.delete('/files/:filename', async (req, res) => {
   const { filename } = req.params;
   try {
@@ -106,9 +112,6 @@ app.delete('/files/:filename', async (req, res) => {
     if (!file) {
       return res.status(404).json({ message: 'File not found' });
     }
-
-    // Delete the file from the storage
-    // Your code to delete the file...
 
     // Delete the file record from the database
     await file.destroy();
@@ -120,14 +123,8 @@ app.delete('/files/:filename', async (req, res) => {
   }
 });
 
-
-
-
-// Sync database and start server
-sequelize.sync()
-  .then(() => {
-    app.listen(5000, () => {
-      console.log('Server is running on port 5000');
-    });
-  })
-  .catch(err => console.error('Error syncing database:', err));
+// Start the server
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
